@@ -1,6 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'kotlin'
 
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath(
+        "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+    )
+  }
+}
+
 sourceCompatibility = versions.java
 targetCompatibility = versions.java
 
@@ -17,6 +28,28 @@ configurations {
 sourceSets {
   main { compileClasspath += configurations.provided }
 }
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+//task javadoc(type: Javadoc, overwrite: true) {
+//  source = sourceSets.main.allSource
+//  classpath += configurations.provided + configurations.compile
+//}
+//
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//  classifier = 'javadoc'
+//  from javadoc.destinationDir
+//}
+//
+artifacts {
+  archives sourcesJar
+//  archives javadocJar
+}
+
 
 dependencies {
   compile(
