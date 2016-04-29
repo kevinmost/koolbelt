@@ -1,0 +1,29 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+  compileSdkVersion 23
+  buildToolsVersion "23.0.2"
+
+  defaultConfig {
+    versionCode 1
+    versionName "1.0"
+
+    minSdkVersion 15
+    targetSdkVersion 23
+  }
+  compileOptions {
+    sourceCompatibility versions.java
+    targetCompatibility versions.java
+  }
+}
+
+dependencies {
+  compile(
+      project(":core")
+  )
+  provided(
+      deps.androidSupportLibs,
+      deps.threeTenABP,
+  )
+}

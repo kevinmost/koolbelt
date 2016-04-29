@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = versions.java
+targetCompatibility = versions.java
+
+tasks.withType(JavaCompile) {
+  sourceCompatibility = versions.java
+  targetCompatibility = versions.java
+}
+
+configurations {
+  optional
+  provided
+  compile.extendsFrom(optional)
+}
+sourceSets {
+  main { compileClasspath += configurations.provided }
+}
+
+dependencies {
+  compile(
+      deps.kotlinStdlib,
+  )
+  optional(
+      deps.rxJava,
+  )
+}
+
