@@ -24,19 +24,17 @@ class WhenWithFallthrough<T>() {
     }
 
     internal fun exec(receiver: T) {
-        var haveAnyMatched = false
-        for (case in cases) {
-            if (case.matches(receiver)) {
-                haveAnyMatched = true
-                case.ifMatches(receiver)
-                if (case.breakAfter) {
-                    break
+        val firstMatch = cases.indexOfFirst { it.matches(receiver) }
+
+        if (firstMatch > -1) {
+            for (index in firstMatch..cases.count() - 1) {
+                cases[index].ifMatches(receiver)
+                if (cases[index].breakAfter) {
+                    return
                 }
             }
         }
-        if (!haveAnyMatched) {
-            defaultBlock?.invoke(receiver)
-        }
+        defaultBlock?.invoke(receiver)
     }
 }
 
@@ -60,5 +58,4 @@ internal data class PredicateMatch<T>(
         override val ifMatches: (T) -> Unit
 ): Match<T> {
     override fun matches(test: T) = predicate(test)
-
 }
