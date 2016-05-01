@@ -8,10 +8,10 @@ import java.util.concurrent.Future
 @Suppress("UNCHECKED_CAST")
 @JvmOverloads
 fun <T : Observable<*>> T.applySchedulers(doWorkOnThread: Scheduler = Schedulers.io(),
-                                          observeOnThread: Scheduler): T {
-    return this
-            .subscribeOn(doWorkOnThread)
-            .observeOn(observeOnThread) as T
+    observeOnThread: Scheduler): T {
+  return this
+      .subscribeOn(doWorkOnThread)
+      .observeOn(observeOnThread) as T
 }
 
 /**
@@ -20,12 +20,12 @@ fun <T : Observable<*>> T.applySchedulers(doWorkOnThread: Scheduler = Schedulers
  */
 @JvmOverloads
 fun <T> Observable<T>.cacheLatest(numToCache: Int = 1): Observable<T> {
-    return this.replay(numToCache).autoConnect()
+  return this.replay(numToCache).autoConnect()
 }
 
 fun <T> Future<T>.toObservable(): Observable<T> = Observable.from(this)
 
 fun <T> Future<T>.onReturn(doOnReturn: (T) -> Unit) {
-    toObservable().subscribe { doOnReturn(it) }
+  toObservable().subscribe { doOnReturn(it) }
 }
 

@@ -10,11 +10,11 @@ import android.database.Cursor
  * rows or closing it), or this function will fail.
  */
 inline fun <T> Cursor?.consumeAll(consumeFunction: (Cursor) -> T): List<T> {
-    return this?.use {
-        val list = mutableListOf<T>()
-        while (this.moveToNext()) {
-            list.add(consumeFunction(this))
-        }
-        return@use list
-    } ?: emptyList()
+  return this?.use {
+    val list = mutableListOf<T>()
+    while (this.moveToNext()) {
+      list.add(consumeFunction(this))
+    }
+    return@use list
+  } ?: emptyList()
 }
