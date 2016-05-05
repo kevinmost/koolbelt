@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import java.util.*
+import java.util.ArrayList
 
 
 fun <T : View> Activity.find(@IdRes id: Int): T? {
@@ -97,4 +97,10 @@ fun <T : View> Fragment.inflate(
     attachToParent: Boolean = false
 ): T {
   return context.inflate(layout, into, attachToParent)
+}
+
+fun sharedElementPair(view: View) : Pair<View, String> {
+  view.tag?.let { tag ->
+    return view to tag as String
+  } ?: throw IllegalArgumentException("Your view must have a tag set to build this shared element transition!")
 }

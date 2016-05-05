@@ -13,6 +13,5 @@ private class Weak<T>(referent: T): ReadOnlyProperty<Any, T?> {
   override fun getValue(thisRef: Any, property: KProperty<*>): T? {
     return weakReference.get()
   }
-
 }
 
