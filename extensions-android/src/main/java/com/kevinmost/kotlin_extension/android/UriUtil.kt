@@ -12,6 +12,6 @@ fun Uri.convert(): URI {
   return URI(toString())
 }
 
-fun Uri.readToByteArray(): ByteArray {
-  return convert().readToByteArray()
+fun Uri.readToByteArray(estimatedSizeInBytes: Int = DEFAULT_BUFFER_SIZE): ByteArray {
+  return convert().readToByteArray(estimatedSizeInBytes)
 }
