@@ -66,4 +66,7 @@ dependencies {
       deps.androidSupportLibs,
       deps.threeTenABP,
   )
+  testCompile(
+      deps.junit,
+  )
 }

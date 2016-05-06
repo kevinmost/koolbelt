@@ -1,5 +1,6 @@
 package com.kevinmost.kotlin_toolbelt.util
 
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WhenWithFallthroughTest {
@@ -21,11 +22,11 @@ class WhenWithFallthroughTest {
         casesHit += 4
       }
     }
-    assert(!casesHit.contains(0))
-    assert(!casesHit.contains(1))
-    assert(casesHit.contains(2))
-    assert(casesHit.contains(3))
-    assert(!casesHit.contains(4))
+    assertTrue(!casesHit.contains(0))
+    assertTrue(!casesHit.contains(1))
+    assertTrue(casesHit.contains(2))
+    assertTrue(casesHit.contains(3))
+    assertTrue(!casesHit.contains(4))
   }
   
   @Test fun `test default hit when nothing else is`() {
@@ -40,9 +41,9 @@ class WhenWithFallthroughTest {
 
       default { casesHit += 3 }
     }
-    assert(!casesHit.contains(0))
-    assert(!casesHit.contains(1))
-    assert(!casesHit.contains(2))
-    assert(casesHit.contains(3))
+    assertTrue(!casesHit.contains(0))
+    assertTrue(!casesHit.contains(1))
+    assertTrue(!casesHit.contains(2))
+    assertTrue(casesHit.contains(3))
   }
 }
