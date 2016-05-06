@@ -49,5 +49,9 @@ dependencies {
   compileOnly(
       deps.rxJava,
   )
+  testCompile(
+      deps.junit,
+      deps.rxJava,
+  )
 }
 

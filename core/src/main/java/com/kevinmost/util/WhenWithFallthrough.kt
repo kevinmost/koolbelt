@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.util
 
 fun <T> whenWithFallthrough(receiver: T, block: WhenWithFallthrough<T>.() -> Unit) {
   WhenWithFallthrough<T>()
