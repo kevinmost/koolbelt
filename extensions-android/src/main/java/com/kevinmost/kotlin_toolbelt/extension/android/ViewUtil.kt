@@ -3,9 +3,12 @@ package com.kevinmost.kotlin_toolbelt.extension.android
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.res.TypedArray
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
+import android.support.annotation.StyleableRes
+import android.support.design.widget.Snackbar
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,16 +94,42 @@ fun <T : View> Context.inflate(
   return LayoutInflater.from(this).inflate(layout, into, into != null && attachToParent) as T
 }
 
-fun <T : View> Fragment.inflate(
-    @LayoutRes layout: Int,
-    into: ViewGroup? = null,
-    attachToParent: Boolean = false
-): T {
-  return context.inflate(layout, into, attachToParent)
-}
-
-fun sharedElementPair(view: View) : Pair<View, String> {
+fun sharedElementPair(view: View): Pair<View, String> {
   view.tag?.let { tag ->
     return view to tag as String
-  } ?: throw IllegalArgumentException("Your view must have a tag set to build this shared element transition!")
+  } ?: throw IllegalArgumentException(
+      "Your view must have a tag set to build this shared element transition!")
 }
+
+fun Context.styledAttributes(attributeSet: AttributeSet,
+    @StyleableRes attrs: IntArray,
+    block: TypedArray.() -> Unit) {
+  val typedArray = obtainStyledAttributes(attributeSet, attrs)
+  block(typedArray)
+  try {
+    typedArray.recycle()
+  } catch(ignored: RuntimeException) {
+    // This is thrown if we call .recycle() twice. The user doesn't have to call this method, but maybe they will!
+  }
+}
+
+fun <T : View> T.disableWhile(whileDisabled: (T) -> Unit) {
+  isEnabled = false
+  whileDisabled(this)
+  isEnabled = true
+}
+
+@JvmOverloads
+fun View.snackbar(
+    message: CharSequence,
+    @IdRes anchorView: Int = View.NO_ID,
+    duration: Int = Snackbar.LENGTH_LONG): Snackbar {
+  return Snackbar.make(
+      if (anchorView == View.NO_ID) this else findViewById(anchorView)!!,
+      message,
+      duration
+  )
+}
+
+val Activity.rootView: View
+  get() = findViewById(android.R.id.content)
