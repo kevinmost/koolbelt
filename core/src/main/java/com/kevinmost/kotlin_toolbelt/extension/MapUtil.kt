@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.kotlin_toolbelt.extension
 
 fun <K, V> Map<K?, V>.filterNotNullKeys(): Map<K, V> {
   return this

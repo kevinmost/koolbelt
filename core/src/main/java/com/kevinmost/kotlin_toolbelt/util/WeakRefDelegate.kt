@@ -1,4 +1,4 @@
-package com.kevinmost.util
+package com.kevinmost.kotlin_toolbelt.util
 
 import java.lang.ref.WeakReference
 import kotlin.properties.ReadOnlyProperty

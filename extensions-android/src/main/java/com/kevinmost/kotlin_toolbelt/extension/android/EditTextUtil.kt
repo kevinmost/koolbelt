@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension.android
+package com.kevinmost.kotlin_toolbelt.extension.android
 
 import android.text.Editable
 import android.text.TextWatcher

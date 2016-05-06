@@ -1,6 +1,6 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.kotlin_toolbelt.util
 
-import com.kevinmost.util.mergingListsMapOf
+import com.kevinmost.kotlin_toolbelt.util.mergingListsMapOf
 import org.junit.Test
 
 class MergingListMapTest {

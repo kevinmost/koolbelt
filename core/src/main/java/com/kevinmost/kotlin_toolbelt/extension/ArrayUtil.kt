@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.kotlin_toolbelt.extension
 
 // There's no stdlib method that doesn't return a new list. We want to keep this as an array for
 // the sake of efficiency sometimes.

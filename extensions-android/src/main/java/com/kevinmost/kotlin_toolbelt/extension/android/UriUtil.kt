@@ -1,7 +1,7 @@
-package com.kevinmost.kotlin_extension.android
+package com.kevinmost.kotlin_toolbelt.extension.android
 
 import android.net.Uri
-import com.kevinmost.kotlin_extension.readToByteArray
+import com.kevinmost.kotlin_toolbelt.extension.readToByteArray
 import java.net.URI
 
 fun URI.convert(): Uri {

@@ -1,4 +1,4 @@
-package com.kevinmost.util
+package com.kevinmost.kotlin_toolbelt.util
 
 fun <T> whenWithFallthrough(receiver: T, block: WhenWithFallthrough<T>.() -> Unit) {
   WhenWithFallthrough<T>()

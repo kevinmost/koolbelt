@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.kotlin_toolbelt.extension
 
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime

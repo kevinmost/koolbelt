@@ -1,6 +1,6 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.kotlin_toolbelt.util
 
-import com.kevinmost.util.addOnlyMapOf
+import com.kevinmost.kotlin_toolbelt.util.addOnlyMapOf
 import org.junit.Test
 
 class AddOnlyMapTest {

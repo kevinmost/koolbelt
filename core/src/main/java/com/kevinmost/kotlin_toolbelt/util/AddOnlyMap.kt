@@ -1,4 +1,4 @@
-package com.kevinmost.util
+package com.kevinmost.kotlin_toolbelt.util
 
 import java.util.LinkedHashMap
 

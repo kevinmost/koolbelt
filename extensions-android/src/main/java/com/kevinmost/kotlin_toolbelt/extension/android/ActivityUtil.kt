@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension.android
+package com.kevinmost.kotlin_toolbelt.extension.android
 
 import android.app.Activity
 import android.app.Application
@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.kevinmost.kotlin_extension.javaClass
+import com.kevinmost.kotlin_toolbelt.extension.javaClass
 
 fun activityCallbacks(
     onCreate: (Activity, savedInstanceState: Bundle?) -> Unit = { activity, savedInstanceState -> },

@@ -1,6 +1,6 @@
-package com.kevinmost.util
+package com.kevinmost.kotlin_toolbelt.util
 
-import com.kevinmost.kotlin_extension.mapToArray
+import com.kevinmost.kotlin_toolbelt.extension.mapToArray
 import java.util.ArrayList
 import java.util.LinkedHashMap
 

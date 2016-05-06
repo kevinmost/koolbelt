@@ -1,4 +1,4 @@
-package com.kevinmost.kotlin_extension
+package com.kevinmost.kotlin_toolbelt.extension
 
 fun <T : Any?> T.javaClass(): Class<T>? {
   // The Kotlin .javaClass extension doesn't handle unbound generics well, since they can be null
