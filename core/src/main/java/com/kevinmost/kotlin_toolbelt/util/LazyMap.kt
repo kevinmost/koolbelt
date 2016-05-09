@@ -1,35 +1,49 @@
 package com.kevinmost.kotlin_toolbelt.util
 
-class LazyMap<K, V>(lock: Any? = null, private val initializer: (K) -> V?) {
+import java.util.Collections
+import java.util.LinkedHashMap
 
-  @Volatile private var _value: MutableMap<K, Any?> = mutableMapOf()
+inline fun <K, V> lazyMapOf(startingMap: Map<K, V>, crossinline initializer: (K) -> V): Map<K, V> {
+  return mutableLazyMapOf(startingMap, initializer)
+}
 
-  // final field is required to enable safe publication of constructed instance
-  private val lock = lock ?: this
+inline fun <K, V> lazyMapOf(crossinline initializer: (K) -> V): Map<K, V> {
+  return mutableLazyMapOf(initializer)
+}
 
-  operator fun get(key: K): V? {
-    val _v1 = _value
-    if (_v1.keyIsInitializedValue(key)) {
-      @Suppress("UNCHECKED_CAST")
-      return _v1[key] as V?
+inline fun <K, V> mutableLazyMapOf(startingMap: Map<K, V>,
+    crossinline initializer: (K) -> V)
+    : MutableMap<K, V> {
+  return object : LazyMap<K, V>(Collections.synchronizedMap(LinkedHashMap(startingMap))) {
+    override fun initializer(key: K) = initializer(key)
+  }
+}
+
+inline fun <K, V> mutableLazyMapOf(crossinline initializer: (K) -> V): MutableMap<K, V> {
+  return mutableLazyMapOf(mapOf(), initializer)
+}
+
+abstract class LazyMap<K, V>(
+    private val delegateMap: MutableMap<K, V> = Collections.synchronizedMap(mutableMapOf())
+) : MutableMap<K, V> by delegateMap {
+
+  abstract fun initializer(key: K): V
+
+  override fun get(key: K): V {
+    val _v1 = delegateMap
+    if (containsKey(key)) {
+      return _v1[key]!!
     }
-    return synchronized(lock) {
-      val _v2 = _value
-      if (_v2.keyIsInitializedValue(key)) {
-        @Suppress("UNCHECKED_CAST")
-        (_v2[key] as V?)
+    return synchronized(delegateMap) {
+      val _v2 = delegateMap
+      if (containsKey(key)) {
+        _v2[key]!!
       } else {
         val newValue = initializer(key)
-        _value[key] = newValue as Any?
+        delegateMap[key] = newValue
         newValue
       }
     }
   }
 }
 
-@Suppress("NOTHING_TO_INLINE")
-private inline fun Map<*, *>.keyIsInitializedValue(key: Any?): Boolean {
-  return containsKey(key) && get(key) !== UNINITIALIZED_VALUE
-}
-
-private object UNINITIALIZED_VALUE

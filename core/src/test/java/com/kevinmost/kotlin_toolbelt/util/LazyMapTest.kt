@@ -1,14 +1,24 @@
 package com.kevinmost.kotlin_toolbelt.util
 
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class LazyMapTest {
 
-  val lazyMap = LazyMap<String, Int> { it.length }
+  var lazyMap: MutableMap<String, Int>? = null
 
-  @Test fun `test lazy map`() {
-    Assert.assertEquals(3, lazyMap["Foo"])
-    Assert.assertEquals(1, lazyMap["F"])
+  @Before fun `setup lazyMap`() {
+    lazyMap = mutableLazyMapOf(mapOf("Foo" to 2)) { string -> string.length }
+  }
+
+  @Test fun `test only initializes missing values`() {
+    assertEquals(2, lazyMap!!["Foo"])
+    assertEquals(1, lazyMap!!["F"])
+  }
+
+  @Test fun `test can insert values later`() {
+    lazyMap!!["Foo"] = 4
+    assertEquals(4, lazyMap!!["Foo"])
   }
 }
