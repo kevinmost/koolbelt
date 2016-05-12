@@ -23,8 +23,14 @@ fun Uri.readToByteArray(estimatedSizeInBytes: Int = DEFAULT_BUFFER_SIZE): ReadUr
 }
 
 sealed class ReadUriResult(val uri: Uri) {
-  class Success(val bytes: ByteArray, uri: Uri) : ReadUriResult(uri)
-  class Failure(val err: IOException, uri: Uri) : ReadUriResult(uri)
+  class Success(val bytes: ByteArray, uri: Uri) : ReadUriResult(uri) {
+    operator fun component1() = bytes
+  }
+  class Failure(val err: IOException, uri: Uri) : ReadUriResult(uri) {
+    operator fun component1() = err
+  }
+
+  operator fun component2() = uri
 
   fun getIfSuccessful(): Success? = this as? Success
 }
