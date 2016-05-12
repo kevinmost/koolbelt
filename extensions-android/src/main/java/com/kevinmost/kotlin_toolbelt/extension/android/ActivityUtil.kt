@@ -8,12 +8,12 @@ import android.content.Intent
 import android.os.Bundle
 import com.kevinmost.kotlin_toolbelt.extension.javaClass
 
-fun activityCallbacks(init: ActivityCallbacks.() -> Unit): Application.ActivityLifecycleCallbacks {
+inline fun activityCallbacks(init: ActivityCallbacks.() -> Unit): Application.ActivityLifecycleCallbacks {
   return ActivityCallbacks().apply { init() }.actualCallback
 }
 
-class ActivityCallbacks internal constructor() {
-  internal val actualCallback = object : ActivityLifecycleCallbacks {
+class ActivityCallbacks constructor() {
+  val actualCallback = object : ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) =
         onCreate(activity, savedInstanceState)
 

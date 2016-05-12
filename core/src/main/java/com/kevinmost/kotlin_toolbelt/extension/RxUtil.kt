@@ -25,7 +25,7 @@ fun <T> Observable<T>.cacheLatest(numToCache: Int = 1): Observable<T> {
 
 fun <T> Future<T>.toObservable(): Observable<T> = Observable.from(this)
 
-fun <T> Future<T>.onReturn(doOnReturn: (T) -> Unit) {
+inline fun <T> Future<T>.onReturn(crossinline doOnReturn: (T) -> Unit) {
   toObservable().subscribe { doOnReturn(it) }
 }
 

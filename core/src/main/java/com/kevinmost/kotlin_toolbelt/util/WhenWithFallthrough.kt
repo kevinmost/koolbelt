@@ -1,6 +1,6 @@
 package com.kevinmost.kotlin_toolbelt.util
 
-fun <T> whenWithFallthrough(receiver: T, block: WhenWithFallthrough<T>.() -> Unit) {
+inline fun <T> whenWithFallthrough(receiver: T, block: WhenWithFallthrough<T>.() -> Unit) {
   WhenWithFallthrough<T>()
       .apply { block(this) }
       .exec(receiver)
@@ -22,7 +22,7 @@ class WhenWithFallthrough<T>() {
     defaultBlock = block
   }
 
-  internal fun exec(receiver: T) {
+  fun exec(receiver: T) {
     val firstMatch = cases.indexOfFirst { it.matches(receiver) }
 
     if (firstMatch > -1) {
