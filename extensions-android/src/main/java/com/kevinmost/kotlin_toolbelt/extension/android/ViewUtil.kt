@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import java.util.ArrayList
 
 
@@ -139,7 +140,13 @@ fun View.snackbar(
       if (anchorView == View.NO_ID) this else findViewById(anchorView)!!,
       message,
       duration
-  )
+  ).apply { show() }
+}
+
+fun Context.toast(
+    message: CharSequence,
+    duration: Int = Toast.LENGTH_LONG) {
+  Toast.makeText(this, message, duration).show()
 }
 
 val Activity.rootView: View
