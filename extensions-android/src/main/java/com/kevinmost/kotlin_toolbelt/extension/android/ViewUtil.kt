@@ -56,7 +56,7 @@ fun <T : View> View.getChildOfType(type: Class<T>): T? {
   }
   if (this is ViewGroup) {
     for (index in 0..childCount) {
-      getChildOfType(type)?.let { return it }
+      getChildAt(index).getChildOfType(type)?.let { return it }
     }
   }
   return null
@@ -113,10 +113,21 @@ fun Context.styledAttributes(attributeSet: AttributeSet,
   }
 }
 
-fun <T : View> T.disableWhile(whileDisabled: (T) -> Unit) {
+/**
+ * @param whileDisabled A function that is invoked after disabling the receiver [View]. If this
+ * function returns `true`, the receiver [View] will be re-enabled.
+ *
+ * @return the return value of [whileDisabled]; essentially, whether or not this [View] will be
+ * re-enabled at the end.
+ */
+inline fun <T : View> T.disableWhile(whileDisabled: (T) -> Boolean): Boolean {
   isEnabled = false
-  whileDisabled(this)
-  isEnabled = true
+  whileDisabled(this).let { result ->
+    if (result) {
+      isEnabled = true
+    }
+    return result
+  }
 }
 
 @JvmOverloads
