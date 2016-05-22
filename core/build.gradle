@@ -48,6 +48,7 @@ dependencies {
   )
   compileOnly(
       deps.rxJava,
+      deps.gson,
   )
   testCompile(
       deps.junit,
