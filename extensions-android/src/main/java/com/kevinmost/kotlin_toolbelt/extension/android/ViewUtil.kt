@@ -102,7 +102,7 @@ fun sharedElementPair(view: View): Pair<View, String> {
       "Your view must have a tag set to build this shared element transition!")
 }
 
-fun Context.styledAttributes(attributeSet: AttributeSet,
+inline fun Context.styledAttributes(attributeSet: AttributeSet,
     @StyleableRes attrs: IntArray,
     block: TypedArray.() -> Unit) {
   val typedArray = obtainStyledAttributes(attributeSet, attrs)
