@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.Toast
 import java.util.ArrayList
@@ -112,6 +113,25 @@ inline fun Context.styledAttributes(attributeSet: AttributeSet,
   } catch(ignored: RuntimeException) {
     // This is thrown if we call .recycle() twice. The user doesn't have to call this method, but maybe they will!
   }
+}
+
+fun copyMeasureSpec(
+    oldMeasureSpec: Int = -1,
+    newSize: Int = -1,
+    newMode: MeasureSpecMode? = null): Int {
+  if (oldMeasureSpec == -1) {
+    return MeasureSpec.makeMeasureSpec(newSize, newMode?.modeInt ?: MeasureSpec.UNSPECIFIED)
+  }
+  val oldSize = MeasureSpec.getSize(oldMeasureSpec)
+  val oldMode = MeasureSpec.getMode(oldMeasureSpec)
+  return MeasureSpec.makeMeasureSpec(
+      if (newSize == -1) oldSize else newSize,
+      if (newMode == null) oldMode else newMode.modeInt
+  )
+}
+
+enum class MeasureSpecMode(val modeInt: Int) {
+  EXACTLY(MeasureSpec.EXACTLY), AT_MOST(MeasureSpec.AT_MOST), UNSPECIFIED(MeasureSpec.UNSPECIFIED)
 }
 
 /**
