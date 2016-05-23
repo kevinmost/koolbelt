@@ -131,7 +131,14 @@ fun copyMeasureSpec(
 }
 
 enum class MeasureSpecMode(val modeInt: Int) {
-  EXACTLY(MeasureSpec.EXACTLY), AT_MOST(MeasureSpec.AT_MOST), UNSPECIFIED(MeasureSpec.UNSPECIFIED)
+  EXACTLY(MeasureSpec.EXACTLY),
+  AT_MOST(MeasureSpec.AT_MOST),
+  UNSPECIFIED(MeasureSpec.UNSPECIFIED),
+  ;
+
+  operator fun get(size: Int): Int {
+    return MeasureSpec.makeMeasureSpec(size, modeInt)
+  }
 }
 
 /**
