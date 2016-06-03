@@ -1,4 +1,5 @@
 rootProject.name = 'kotlin-extensions'
 include 'core'
 include 'extensions-android'
+include 'extensions-java8'
 

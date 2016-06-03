@@ -11,12 +11,12 @@ buildscript {
   }
 }
 
-sourceCompatibility = versions.java
-targetCompatibility = versions.java
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 tasks.withType(JavaCompile) {
-  sourceCompatibility = versions.java
-  targetCompatibility = versions.java
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -41,10 +41,5 @@ artifacts {
 
 
 dependencies {
-  compile(deps.kotlinStdlib,)
-  compileOnly(deps.rxJava,
-      deps.gson,)
-  testCompile(deps.junit,
-      deps.rxJava,)
+  compile(project(":core"))
 }
-
