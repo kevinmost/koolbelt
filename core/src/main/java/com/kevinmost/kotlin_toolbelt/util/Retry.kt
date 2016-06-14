@@ -60,12 +60,12 @@ class RetryContext<T>(private val maxRetries: Int) {
         }
       }
     }
-    return lastFailure ?: Result.Failure()
+    return lastFailure ?: Result.Failure<T>(null)
   }
 }
 
 sealed class Result<T>(val value: T?) {
   class Success<T> internal constructor(value: T?) : Result<T>(value)
-  class Failure<T> internal constructor(failValue: T? = null) : Result<T>(failValue)
-  class Abort<T> internal constructor(abortValue: T? = null) : Result<T>(abortValue)
+  class Failure<T> internal constructor(failValue: T?) : Result<T>(failValue)
+  class Abort<T> internal constructor(abortValue: T?) : Result<T>(abortValue)
 }
