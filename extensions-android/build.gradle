@@ -65,6 +65,7 @@ dependencies {
   provided(
       deps.androidSupportLibs,
       deps.threeTenABP,
+      deps.timber,
   )
   testCompile(
       deps.junit,
