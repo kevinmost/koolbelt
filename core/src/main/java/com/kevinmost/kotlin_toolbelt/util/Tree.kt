@@ -28,7 +28,9 @@ data class Tree<V> internal constructor(
           parent = parent,
           children = mutableListOf<Tree<V>>()
       )
-      // HACK! Good thing Kotlin "immutable" Collections aren't really immutable... :X
+      // HACK! We had to build the Tree itself before adding any of its children because we need
+      // the children to be able to reference their parent (which is this aforementioned Tree...)
+      // Good thing Kotlin "immutable" Collections aren't really immutable... :X
       (tree.children as MutableList<Tree<V>>).addAll(__children.map { it.__build(tree) })
       return tree
     }

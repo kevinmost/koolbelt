@@ -24,4 +24,20 @@ class TreeTest {
     Assert.assertEquals(22, tree[1][0][0].value)
     Assert.assertEquals(23, tree[1][0][1].value)
   }
+
+  @Test fun `test parent reference works properly`() {
+    val tree = treeOf(5) {
+      node(2) {
+        node(3)
+      }
+      node(3) {
+        node(8) {
+          node(22)
+          node(23)
+        }
+      }
+    }
+    Assert.assertTrue(tree[0].parent === tree)
+    Assert.assertTrue(tree[1][0][1].parent?.parent === tree[1])
+  }
 }
