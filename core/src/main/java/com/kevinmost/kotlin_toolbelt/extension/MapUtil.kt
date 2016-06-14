@@ -1,8 +1,15 @@
 package com.kevinmost.kotlin_toolbelt.extension
 
-fun <K, V> Map<K?, V>.filterNotNullKeys(): Map<K, V> {
-  return this
-      .filterKeys { it != null }
-      .mapKeys { it.key!! } // Silly that we have to assert the keys aren't null, but Kotlin can't tell from the above filter
+fun <K, V : Any?> Map<K?, V>.filterNotNullKeys(): Map<K, V> {
+  @Suppress("UNCHECKED_CAST")
+  return (this.filterKeys { it != null }) as Map<K, V>
 }
 
+fun <K : Any?, V> Map<K, V?>.filterNotNullValues(): Map<K, V> {
+  @Suppress("UNCHECKED_CAST")
+  return (this.filterValues { it != null }) as Map<K, V>
+}
+
+fun <K, V> Map<K?, V?>.filterNotNullKeysAndValues(): Map<K, V> {
+  return this.filterNotNullKeys().filterNotNullValues()
+}

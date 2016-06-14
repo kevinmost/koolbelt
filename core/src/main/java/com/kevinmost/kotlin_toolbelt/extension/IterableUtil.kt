@@ -10,7 +10,9 @@ import java.util.ArrayList
  * that do not divide evenly into [n].
  */
 @JvmOverloads
-inline fun <T> Iterable<T>.every(n: Int, useLeftoversAtEnd: Boolean = true,
+inline fun <T> Iterable<T>.every(
+    n: Int,
+    useLeftoversAtEnd: Boolean = true,
     block: (List<T>) -> Unit) {
   val currentList = ArrayList<T>(n)
   for (element in this) {
