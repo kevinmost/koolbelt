@@ -7,7 +7,9 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",)
+    classpath(
+        "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+    )
   }
 }
 
@@ -41,10 +43,16 @@ artifacts {
 
 
 dependencies {
-  compile(deps.kotlinStdlib,)
-  compileOnly(deps.rxJava,
-      deps.gson,)
-  testCompile(deps.junit,
-      deps.rxJava,)
+  compile(
+      deps.kotlinStdlib,
+  )
+  compileOnly(
+      deps.rxJava,
+      deps.gson,
+  )
+  testCompile(
+      deps.junit,
+      deps.rxJava,
+  )
 }
 
