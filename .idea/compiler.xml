@@ -21,10 +21,8 @@
     <bytecodeTargetLevel>
       <module name="core_main" target="1.7" />
       <module name="core_test" target="1.7" />
-      <module name="extensions-android_main" target="1.7" />
-      <module name="extensions-android_test" target="1.7" />
-      <module name="kotlin-extensions_main" target="1.7" />
-      <module name="kotlin-extensions_test" target="1.7" />
+      <module name="extensions-java8_main" target="1.8" />
+      <module name="extensions-java8_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

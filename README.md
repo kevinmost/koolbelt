@@ -1,4 +1,4 @@
-# kotlin-toolbelt
+# Koolbelt
 
 A bunch of useful extensions for Kotlin.
 
@@ -12,7 +12,7 @@ I add functions to this as I find that I need them in my day-to-day life. They m
 
 This is hosted on Jitpack. Replace all instances of `VERSION_NUM` with the commit-hash that you would like to add to your project. Or, you can replace it with `master-SNAPSHOT` to constantly stay up to date. However, keep in mind that this makes your builds non-deterministic!
 
-For example, you'd use `compile 'com.github.kevinmost.kotlin-toolbelt:core:cd260ce'` to pull down the state of this library at [the commit with commit-hash cd260ce](https://github.com/kevinmost/kotlin-toolbelt/tree/cd260ce).
+For example, you'd use `compile 'com.github.kevinmost.koolbelt:core:cd260ce'` to pull down the state of this library at [the commit with commit-hash cd260ce](https://github.com/kevinmost/koolbelt/tree/cd260ce).
 
 #### For Gradle
 
@@ -25,7 +25,7 @@ maven { url "https://jitpack.io" }
 Then add the client to your dependencies
 
 ```groovy
-compile 'com.github.kevinmost.kotlin-toolbelt:core:VERSION_NUM'
+compile 'com.github.kevinmost.koolbelt:core:VERSION_NUM'
 ```
 
 ---
@@ -47,7 +47,7 @@ Then add the client to your dependencies:
 
 ```xml
 <dependency>
-  <groupId>com.github.kevinmost.kotlin-toolbelt</groupId>
+  <groupId>com.github.kevinmost.koolbelt</groupId>
   <artifactId>core</artifactId>
   <version>VERSION_NUM</version>
 </dependency>

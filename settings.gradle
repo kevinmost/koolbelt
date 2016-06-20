@@ -1,4 +1,4 @@
-rootProject.name = 'kotlin-extensions'
+rootProject.name = 'koolbelt'
 include 'core'
 include 'extensions-android'
 include 'extensions-java8'

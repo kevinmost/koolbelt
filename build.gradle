@@ -35,7 +35,7 @@ allprojects {
     maven { url 'https://jitpack.io' }
   }
 
-  group 'com.kevinmost.extensions-kotlin'
+  group 'com.kevinmost.koolbelt'
   version '1.0'
 
 }
