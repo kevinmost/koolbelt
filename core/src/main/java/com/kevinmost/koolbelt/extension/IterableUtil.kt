@@ -1,6 +1,6 @@
 package com.kevinmost.koolbelt.extension
 
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Invokes [block] upon each individual sublist that is chunked out from every [n] elements in this

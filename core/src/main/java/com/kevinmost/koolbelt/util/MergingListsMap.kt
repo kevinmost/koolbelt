@@ -1,8 +1,7 @@
 package com.kevinmost.koolbelt.util
 
 import com.kevinmost.koolbelt.extension.mapToArray
-import java.util.ArrayList
-import java.util.LinkedHashMap
+import java.util.*
 
 fun <K, V> mergingListsMapOf(vararg pairs: Pair<K, List<V>>): MergingListsMap<K, V> {
   // IntelliJ just flips out when it sees the AddOnlyMap class...
@@ -32,7 +31,7 @@ private class MergingListsMapImpl<K, V> internal constructor(private val delegat
 
   override fun plus(other: Map<K, List<V>>): MergingListsMap<K, V> {
     return MergingListsMapImpl(LinkedHashMap(delegateMap)).apply {
-      for((key, value) in other) {
+      for ((key, value) in other) {
         put(key, value)
       }
     }

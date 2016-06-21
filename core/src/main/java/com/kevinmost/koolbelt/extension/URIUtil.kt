@@ -12,7 +12,7 @@ fun URI.readToByteArray(estimatedSizeInBytes: Int = DEFAULT_BUFFER_SIZE): ReadUR
   }
 }
 
-private fun InputStream.readToByteArray(estimatedSizeInBytes: Int) : ByteArray {
+private fun InputStream.readToByteArray(estimatedSizeInBytes: Int): ByteArray {
   return use { readBytes(estimatedSizeInBytes) }
 }
 
@@ -20,6 +20,7 @@ sealed class ReadURIResult(val uri: URI) {
   class Success(val bytes: ByteArray, uri: URI) : ReadURIResult(uri) {
     operator fun component1() = bytes
   }
+
   class Failure(val err: IOException, uri: URI) : ReadURIResult(uri) {
     operator fun component1() = err
   }

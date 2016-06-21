@@ -1,6 +1,6 @@
 package com.kevinmost.koolbelt.extension
 
-import java.util.ArrayList
+import java.util.*
 
 fun <T> MutableList<T>.setOrAppend(index: Int, element: T): MutableList<T> {
   if (size > index) {
@@ -11,4 +11,4 @@ fun <T> MutableList<T>.setOrAppend(index: Int, element: T): MutableList<T> {
   return this
 }
 
-fun <T> mutableListOfSize(startingSize: Int) : List<T> = ArrayList(startingSize)
+fun <T> mutableListOfSize(startingSize: Int): List<T> = ArrayList(startingSize)

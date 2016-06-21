@@ -14,7 +14,7 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.Toast
-import java.util.ArrayList
+import java.util.*
 
 
 fun <T : View> Activity.find(@IdRes id: Int): T? {

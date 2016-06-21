@@ -14,7 +14,7 @@ inline fun <T> retry(numTimes: Int,
 class RetryContext<T>(private val maxRetries: Int) {
 
   var numFailuresSoFar = 0
-      private set
+    private set
 
   /**
    * Mark this run as a failure and try again if we haven't hit [maxRetries]. If this is the final

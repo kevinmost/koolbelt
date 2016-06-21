@@ -1,6 +1,6 @@
 package com.kevinmost.koolbelt.util
 
-import java.util.LinkedHashMap
+import java.util.*
 
 fun <K, V> addOnlyMapOf(vararg pairs: Pair<K, V>): AddOnlyMap<K, V> {
   return AddOnlyMapImpl(mutableMapOf(*pairs))
