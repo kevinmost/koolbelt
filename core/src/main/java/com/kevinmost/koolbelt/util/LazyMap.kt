@@ -1,7 +1,6 @@
 package com.kevinmost.koolbelt.util
 
-import java.util.Collections
-import java.util.LinkedHashMap
+import java.util.*
 
 inline fun <K, V> lazyMapOf(startingMap: Map<K, V>, crossinline initializer: (K) -> V): Map<K, V> {
   return mutableLazyMapOf(startingMap, initializer)
@@ -46,4 +45,3 @@ abstract class LazyMap<K, V>(
     }
   }
 }
-

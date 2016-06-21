@@ -1,4 +1,4 @@
-package com.kevinmost.koolbelt.extension
+package com.kevinmost.koolbelt.extension.android
 
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
