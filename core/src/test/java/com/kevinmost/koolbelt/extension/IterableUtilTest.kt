@@ -5,7 +5,7 @@ import org.junit.Test
 
 class IterableUtilTest {
   @Test fun `test every function with empty list`() {
-    emptyList<String>().every(5) { Assert.fail("This cosure should never be executed!") }
+    emptyList<String>().every(5) { Assert.fail("This closure should never be executed!") }
   }
 
   @Test fun `test splitEvery function with empty list`() {
