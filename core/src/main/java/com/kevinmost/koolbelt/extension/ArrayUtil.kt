@@ -11,6 +11,14 @@ inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R>
   return result as Array<R>
 }
 
+operator inline fun <reified T> Array<T>.get(range: IntRange): Array<T> {
+  return if (range.step == 1 && !range.isEmpty()) {
+    copyOfRange(range.start, range.endInclusive)
+  } else {
+    toList()[range].toTypedArray()
+  }
+}
+
 inline fun <T, reified R> mapEach(vararg elements: T, mapFunction: (T) -> R): Array<R> {
   return elements.mapToArray(mapFunction)
 }
