@@ -11,4 +11,8 @@ fun <T> MutableList<T>.setOrAppend(index: Int, element: T): MutableList<T> {
   return this
 }
 
-fun <T> mutableListOfSize(startingSize: Int): List<T> = ArrayList(startingSize)
+operator fun <T> List<T>.get(range: IntRange): List<T> {
+  return subList(range.start, range.endInclusive)
+}
+
+fun <T> mutableListOfSize(startingSize: Int): MutableList<T> = ArrayList(startingSize)
