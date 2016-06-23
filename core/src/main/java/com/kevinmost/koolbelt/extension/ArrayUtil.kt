@@ -11,9 +11,9 @@ inline fun <T, reified R> Array<out T>.mapToArray(transform: (T) -> R): Array<R>
   return result as Array<R>
 }
 
-operator inline fun <reified T> Array<T>.get(range: IntRange): Array<T> {
+operator inline fun <reified T> Array<T>.get(range: IntProgression): Array<T> {
   return if (range.step == 1 && !range.isEmpty()) {
-    copyOfRange(range.start, range.endInclusive)
+    copyOfRange(range.first, range.last)
   } else {
     toList()[range].toTypedArray()
   }

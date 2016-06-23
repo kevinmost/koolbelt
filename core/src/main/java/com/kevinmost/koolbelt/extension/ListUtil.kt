@@ -12,11 +12,16 @@ fun <T> MutableList<T>.setOrAppend(index: Int, element: T): MutableList<T> {
 }
 
 operator fun <T> List<T>.get(range: IntProgression): List<T> {
-  if (range.step == 1 && !range.isEmpty()) {
-    return subList(range.first, range.last)
-  }
-  return range.fold(mutableListOf<T>()) { accumulator, number ->
-    accumulator.apply { add(this@get[number]) }
+  return if (range.isEmpty()) {
+    emptyList()
+  } else {
+    if (range.step == 1) {
+      subList(range.first, range.last)
+    } else {
+      range.fold(mutableListOf<T>()) { list, number ->
+        list.apply { add(this@get[number]) }
+      }
+    }
   }
 }
 
