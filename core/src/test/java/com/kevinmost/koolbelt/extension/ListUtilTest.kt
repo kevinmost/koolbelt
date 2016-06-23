@@ -1,5 +1,6 @@
 package com.kevinmost.koolbelt.extension
 
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
@@ -24,5 +25,21 @@ class ListUtilTest {
     }
   }
 
+  @Test fun `test operator overload for sublist`() {
+    val numbers = (1..100).toList()
 
+    val sub = numbers[50..52]
+    Assert.assertEquals(2, sub.size)
+    Assert.assertEquals(51, sub[0])
+    Assert.assertEquals(52, sub[1])
+
+    val sub2 = numbers[0..0]
+    Assert.assertTrue(sub2.isEmpty())
+
+    val sub3 = numbers[10 downTo 0 step 5]
+    Assert.assertEquals(3, sub3.size)
+    Assert.assertEquals(11, sub3[0])
+    Assert.assertEquals(6, sub3[1])
+    Assert.assertEquals(1, sub3[2])
+  }
 }
