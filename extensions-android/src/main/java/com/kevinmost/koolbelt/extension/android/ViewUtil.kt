@@ -179,10 +179,13 @@ fun Context.toast(
   Toast.makeText(this, message, duration).show()
 }
 
-enum class Visibility() {
-  VISIBLE,
-  INVISIBLE,
-  GONE,
+sealed class Visibility {
+
+  interface HiddenVisibility
+
+  object VISIBLE : Visibility()
+  object INVISIBLE : Visibility(), HiddenVisibility
+  object GONE : Visibility(), HiddenVisibility
 }
 
 var View.vis: Visibility
@@ -201,6 +204,14 @@ var View.vis: Visibility
       Visibility.GONE -> GONE
     }
   }
+
+fun View.show() {
+  vis = Visibility.VISIBLE
+}
+
+fun View.hide(visibility: Visibility.HiddenVisibility = Visibility.GONE) {
+  vis = visibility as? Visibility ?: Visibility.GONE
+}
 
 
 val Activity.rootView: View
