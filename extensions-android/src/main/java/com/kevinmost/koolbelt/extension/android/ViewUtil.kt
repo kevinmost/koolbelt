@@ -209,6 +209,7 @@ fun View.show() {
   vis = Visibility.VISIBLE
 }
 
+@JvmOverloads
 fun View.hide(visibility: Visibility.HiddenVisibility = Visibility.GONE) {
   vis = visibility as? Visibility ?: Visibility.GONE
 }
