@@ -11,7 +11,10 @@ import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.MeasureSpec
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import java.util.*
@@ -175,6 +178,42 @@ fun Context.toast(
     duration: Int = Toast.LENGTH_LONG) {
   Toast.makeText(this, message, duration).show()
 }
+
+sealed class Visibility {
+
+  interface HiddenVisibility
+
+  object VISIBLE : Visibility()
+  object INVISIBLE : Visibility(), HiddenVisibility
+  object GONE : Visibility(), HiddenVisibility
+}
+
+var View.vis: Visibility
+  get() {
+    return when(visibility) {
+      VISIBLE -> Visibility.VISIBLE
+      INVISIBLE -> Visibility.INVISIBLE
+      GONE -> Visibility.GONE
+      else -> throw IllegalStateException("A view's visibility cannot be anything but VISIBLE, INVISIBLE, or GONE. The int value for this view's visibility was $visibility")
+    }
+  }
+  set(value) {
+    visibility = when(value) {
+      Visibility.VISIBLE -> VISIBLE
+      Visibility.INVISIBLE -> INVISIBLE
+      Visibility.GONE -> GONE
+    }
+  }
+
+fun View.show() {
+  vis = Visibility.VISIBLE
+}
+
+@JvmOverloads
+fun View.hide(visibility: Visibility.HiddenVisibility = Visibility.GONE) {
+  vis = visibility as? Visibility ?: Visibility.GONE
+}
+
 
 val Activity.rootView: View
   get() = findViewById(android.R.id.content)
