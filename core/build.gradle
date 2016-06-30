@@ -43,14 +43,15 @@ artifacts {
 
 
 dependencies {
-  compileOnly(
-      deps.kotlinStdlib,
+  [deps.kotlinStdlib,
       deps.rxJava,
       deps.gson,
-  )
+  ].forEach {
+    compileOnly it
+    testCompile it
+  }
   testCompile(
       deps.junit,
-      deps.rxJava,
   )
 }
 
