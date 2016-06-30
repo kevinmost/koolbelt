@@ -14,6 +14,8 @@ This is hosted on Jitpack. Replace all instances of `VERSION_NUM` with the commi
 
 For example, you'd use `compile 'com.github.kevinmost.koolbelt:core:cd260ce'` to pull down the state of this library at [the commit with commit-hash cd260ce](https://github.com/kevinmost/koolbelt/tree/cd260ce).
 
+Aside from `core`, there are other modules for extensions for (at the moment) Android and Java 8. More modules will come in the future.
+
 #### For Gradle
 
 Add `jitpack.io` to your repositories (in your root build.gradle, add the following line to the end of your `repositories { ... }` block):
@@ -60,9 +62,8 @@ Then add the client to your dependencies:
 ---
 
 
-### Extensions to the extensions
-
-There are other modules you can import besides just `core`. Their artifactIds are:
-
-- `extensions-android`: For Android users. NOTE: No unit-test coverage for these. :( PRs welcome!
-- `extensions-java8`: For Java 8 specific stuff, so that `core` can continue to serve users on Java 7
+| Module name          | Method count | Description                              | Depends on |
+|----------------------|--------------|------------------------------------------|------------|
+| `core`               | <a href="http://www.methodscount.com/?lib=com.github.kevinmost.koolbelt%3Acore%3Ae35b4b8"><img src="https://img.shields.io/badge/Methods count-560-e91e63.svg"/></a> | Core functionality that works on Java 7+ |            |
+| `extensions-android` | <a href="http://www.methodscount.com/?lib=com.github.kevinmost.koolbelt%3Aextensions-android%3Ae35b4b8"><img src="https://img.shields.io/badge/Methods count-339-e91e63.svg"/></a> | Android-specific functionality           | `core`     |
+| `extensions-java8`   | <a href="http://www.methodscount.com/?lib=com.github.kevinmost.koolbelt%3Aextensions-java8%3Ae35b4b8"><img src="https://img.shields.io/badge/Methods count-2-e91e63.svg"/></a> | Java 8-specific methods                  | `core`     |
