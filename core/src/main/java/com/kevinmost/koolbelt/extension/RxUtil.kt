@@ -29,3 +29,10 @@ inline fun <T> Future<T>.onReturn(crossinline doOnReturn: (T) -> Unit) {
   toObservable().subscribe { doOnReturn(it) }
 }
 
+operator fun <T1, T2> Observable<T1>.plus(other: Observable<T2>): Observable<Pair<T1, T2>> {
+  return Observable.combineLatest(this, other) { first, second -> first to second }
+}
+
+fun <T1, T2> Observable<T1>.combineWith(other: Observable<T2>): Observable<Pair<T1, T2>> {
+  return this + other
+}
