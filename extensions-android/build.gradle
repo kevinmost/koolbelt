@@ -60,7 +60,7 @@ artifacts {
 
 dependencies {
     compile(
-            project(":core")
+            project(":core"),
     )
     provided(
             deps.androidSupportLibs,

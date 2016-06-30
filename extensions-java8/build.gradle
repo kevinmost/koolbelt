@@ -44,6 +44,6 @@ artifacts {
 
 dependencies {
   compile(
-      project(":core")
+      project(":core"),
   )
 }

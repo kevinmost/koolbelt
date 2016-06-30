@@ -43,10 +43,8 @@ artifacts {
 
 
 dependencies {
-  compile(
-      deps.kotlinStdlib,
-  )
   compileOnly(
+      deps.kotlinStdlib,
       deps.rxJava,
       deps.gson,
   )
