@@ -84,9 +84,10 @@ fun <T : View?> View.getAllChildrenOfType(type: Class<T>): List<T> {
   return list.toList() // Return immutable collection
 }
 
-fun ViewGroup.addView(@LayoutRes layoutRes: Int, index: Int = -1) {
-  val view: View = context.inflate(layoutRes, this, false)
-  this.addView(view, index)
+fun ViewGroup.addView(@LayoutRes layoutRes: Int, index: Int = -1): View {
+  return context.inflate<View>(layoutRes, this, false).apply {
+    this@addView.addView(this, index)
+  }
 }
 
 @JvmOverloads
