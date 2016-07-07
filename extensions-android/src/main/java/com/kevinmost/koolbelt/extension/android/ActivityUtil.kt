@@ -6,7 +6,6 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.kevinmost.koolbelt.extension.javaClass
 
 inline fun activityCallbacks(init: ActivityCallbacks.() -> Unit): Application.ActivityLifecycleCallbacks {
   return ActivityCallbacks().apply { init() }.actualCallback
@@ -75,6 +74,13 @@ class ActivityCallbacks constructor() {
  */
 interface ExpectsBundleArgs<ARG : Any>
 
+fun <ARG> bundleWithTypeSafeArg(
+    arg: ARG,
+    vararg otherArgs: Pair<String, Any>
+): Bundle {
+  return bundleOf("TYPE_SAFE_ARG" to arg, *otherArgs)
+}
+
 inline fun <reified A, ARG> Context.intentWithTypeSafeArg(
     arg: ARG,
     vararg otherArgs: Pair<String, Any>
@@ -83,15 +89,14 @@ inline fun <reified A, ARG> Context.intentWithTypeSafeArg(
     A : Activity,
     A : ExpectsBundleArgs<ARG> {
   return Intent(this, A::class.java).apply {
-    putExtras(Bundle().put("TYPE_SAFE_ARG" to arg, *otherArgs))
+    putExtras(bundleWithTypeSafeArg(arg, *otherArgs))
   }
 }
 
-inline fun <reified ARG : Any> ExpectsBundleArgs<ARG>.getTypeSafeArg(): ARG {
-  if (this !is Activity) {
-    throw IllegalArgumentException("Only Activities can implement ${ARG::class.javaClass()?.name}")
-  }
-  return intent?.extras?.get("TYPE_SAFE_ARG") as? ARG ?:
-      throw IllegalArgumentException(
-          "A type-safe argument wasn't passed to this activity, ${javaClass.name}")
+inline fun <A, reified ARG> A.getTypeSafeArgs(): ARG
+    where
+    A : Activity,
+    A : ExpectsBundleArgs<ARG> {
+  return (intent?.extras?.get("TYPE_SAFE_ARG")) as ARG
 }
+
