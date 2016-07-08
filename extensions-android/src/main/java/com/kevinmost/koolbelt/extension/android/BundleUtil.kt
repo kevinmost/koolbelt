@@ -6,12 +6,13 @@ import android.os.Parcelable
 import java.io.Serializable
 
 // Copied from Anko's ContextUtils and adapted to take in a Bundle
-fun bundleOf(vararg params: Pair<String, Any>) = Bundle().put(*params)
+fun bundleOf(vararg params: Pair<String, Any?>) = Bundle().put(*params)
 
 @SuppressLint("NewApi") // Until https://youtrack.jetbrains.com/issue/KT-12015 gets resolved
-fun Bundle.put(vararg params: Pair<String, Any>): Bundle {
+fun Bundle.put(vararg params: Pair<String, Any?>): Bundle {
   for ((k, v) in params) {
     when (v) {
+      null -> putString(k, null)
       is Boolean -> putBoolean(k, v)
       is Byte -> putByte(k, v)
       is Char -> putChar(k, v)
