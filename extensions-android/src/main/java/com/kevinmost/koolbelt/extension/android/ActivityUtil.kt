@@ -93,10 +93,10 @@ inline fun <reified A, ARG> Context.intentWithTypeSafeArg(
   }
 }
 
-inline fun <A, reified ARG> A.getTypeSafeArgs(): ARG
+fun <A, ARG> A.getTypeSafeArg(): ARG
     where
     A : Activity,
     A : ExpectsBundleArgs<ARG> {
+  @Suppress("UNCHECKED_CAST")
   return (intent?.extras?.get("TYPE_SAFE_ARG")) as ARG
 }
-
