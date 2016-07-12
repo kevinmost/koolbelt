@@ -1,6 +1,5 @@
 package com.kevinmost.koolbelt.extension.android
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
 import java.io.Serializable
@@ -8,7 +7,6 @@ import java.io.Serializable
 // Copied from Anko's ContextUtils and adapted to take in a Bundle
 fun bundleOf(vararg params: Pair<String, Any?>) = Bundle().put(*params)
 
-@SuppressLint("NewApi") // Until https://youtrack.jetbrains.com/issue/KT-12015 gets resolved
 fun Bundle.put(vararg params: Pair<String, Any?>): Bundle {
   for ((k, v) in params) {
     when (v) {
