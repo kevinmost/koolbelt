@@ -6,6 +6,7 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.kevinmost.koolbelt.extension.javaClass
 
 inline fun activityCallbacks(init: ActivityCallbacks.() -> Unit): Application.ActivityLifecycleCallbacks {
   return ActivityCallbacks().apply { init() }.actualCallback
@@ -93,10 +94,15 @@ inline fun <reified A, ARG> Context.intentWithTypeSafeArg(
   }
 }
 
-fun <A, ARG> A.getTypeSafeArg(): ARG
-    where
-    A : Activity,
-    A : ExpectsBundleArgs<ARG> {
-  @Suppress("UNCHECKED_CAST")
-  return (intent?.extras?.get("TYPE_SAFE_ARG")) as ARG
+// TODO: Can't make the receiver an intersection of two types until https://youtrack.jetbrains.com/issue/KT-9630 is
+// resolved, so when that is fixed, we should also make the receiver extend Activity
+inline fun <reified ARG : Any> ExpectsBundleArgs<ARG>.getTypeSafeArg(): ARG {
+  when (this) {
+    is Activity -> {
+      return intent?.extras?.get("TYPE_SAFE_ARG") as? ARG
+          ?: throw IllegalArgumentException("A type-safe argument wasn't passed to this activity, ${javaClass.name}")
+    }
+    else -> throw IllegalArgumentException("Only Activities can implement ${ARG::class.javaClass()?.name}")
+  }
 }
+
