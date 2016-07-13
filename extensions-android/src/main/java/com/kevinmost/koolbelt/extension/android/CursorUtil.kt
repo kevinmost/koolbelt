@@ -9,7 +9,7 @@ import android.database.Cursor
  * being consumed. The [consumeFunction] *must* not in any way alter the cursor (such as moving
  * rows or closing it), or this function will fail.
  */
-inline fun <T: Any> Cursor?.consumeAll(crossinline consumeFunction: (Cursor) -> T): List<T> {
+inline fun <T : Any> Cursor?.consumeAll(crossinline consumeFunction: (Cursor) -> T): List<T> {
   return toSequence(consumeFunction).toList()
 }
 
@@ -23,15 +23,15 @@ inline fun <T: Any> Cursor?.consumeAll(crossinline consumeFunction: (Cursor) -> 
 inline fun <T : Any> Cursor?.toSequence(crossinline consumeFunction: (Cursor) -> T): Sequence<T> {
   if (this == null || !this.moveToFirst()) return emptySequence()
 
-  this.use {
-    return generateSequence {
-      return@generateSequence if (this.isClosed || this.isAfterLast) {
-        null
-      } else {
-        consumeFunction(this).apply {
-          this@toSequence.moveToNext()
-        }
+  var moreRowsExist: Boolean = true
+
+  return generateSequence {
+    if (moreRowsExist) {
+      consumeFunction(this).apply {
+        moreRowsExist = moveToNext()
       }
+    } else {
+      null
     }
   }
 }
