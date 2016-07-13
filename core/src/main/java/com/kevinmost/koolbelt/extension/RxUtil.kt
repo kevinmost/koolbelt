@@ -5,8 +5,8 @@ import rx.Scheduler
 import rx.schedulers.Schedulers
 import rx.subjects.AsyncSubject
 import rx.subjects.BehaviorSubject
-import rx.subjects.PublishSubject
 import rx.subjects.ReplaySubject
+import rx.subjects.Subject
 import java.util.concurrent.Future
 
 @Suppress("UNCHECKED_CAST")
@@ -41,19 +41,11 @@ infix fun <T1, T2> Observable<T1>.zipWith(other: Observable<T2>): Observable<Pai
   return this.zipWith(other) { first, second -> first to second }
 }
 
-
-var <T> BehaviorSubject<T>.currentValue: T
-  get() = this.value
-  set(value) = onNext(value)
-
-var <T> PublishSubject<T>.currentValue: T
-  get() = throw UnsupportedOperationException("PublishSubject does not cache its emitted values; there is no concept of a 'current' value to retrieve!")
-  set(value) = onNext(value)
-
-var <T> ReplaySubject<T>.currentValue: T
-  get() = this.value
-  set(value) = onNext(value)
-
-var <T> AsyncSubject<T>.currentValue: T
-  get() = this.value
+var <T> Subject<T, T>.currentValue: T
+  get() = when(this) {
+    is BehaviorSubject<T> -> this.value
+    is AsyncSubject<T> -> this.value
+    is ReplaySubject<T> -> this.value
+    else -> last().toBlocking().first() // TODO: This seems right, but... does it work?
+  }
   set(value) = onNext(value)
