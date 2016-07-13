@@ -25,7 +25,7 @@ inline fun <T : Any> Cursor?.toSequence(crossinline consumeFunction: (Cursor) ->
 
   this.use {
     return generateSequence {
-      return@generateSequence if (this.isAfterLast) {
+      return@generateSequence if (this.isClosed || this.isAfterLast) {
         null
       } else {
         consumeFunction(this).apply {
