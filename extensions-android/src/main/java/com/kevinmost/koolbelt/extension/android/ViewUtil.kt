@@ -3,6 +3,7 @@ package com.kevinmost.koolbelt.extension.android
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.TypedArray
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
@@ -218,3 +219,18 @@ fun View.hide(visibility: Visibility.HiddenVisibility = Visibility.GONE) {
 
 val Activity.rootView: View
   get() = findViewById(android.R.id.content)
+
+
+// See: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.3_r1/android/support/v7/app/MediaRouteButton.java#256
+// Even Google, the kings of "let's have 50 fields written in Hungarian notation in our 4000-line class files",
+// think this is gross
+inline fun <reified A: Activity> View.getHostingActivity(): A {
+  var context: Context = context
+  while (context is ContextWrapper) {
+    if (context is A) {
+      return context
+    }
+    context = @Suppress("USELESS_CAST")(context as ContextWrapper).baseContext
+  }
+  throw IllegalStateException("This View has no hosting Activity of type ${A::class.java.name}. Its completely-unwrapped Context is an instance of ${context.javaClass.name}")
+}
