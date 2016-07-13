@@ -3,8 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions-android/extensions-android.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions-android/extensions-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions-android/extensions-android.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions-android/extensions-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions-java8/extensions-java8.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions-java8/extensions-java8.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions-java8/extensions-java8.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions-java8/extensions-java8.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/koolbelt.iml" filepath="$PROJECT_DIR$/.idea/modules/koolbelt.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/koolbelt.iml" filepath="$PROJECT_DIR$/.idea/modules/koolbelt.iml" />
     </modules>
   </component>
