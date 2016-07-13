@@ -25,13 +25,15 @@ inline fun <T : Any> Cursor?.toSequence(crossinline consumeFunction: (Cursor) ->
 
   var moreRowsExist: Boolean = true
 
-  return generateSequence {
-    if (moreRowsExist) {
-      consumeFunction(this).apply {
-        moreRowsExist = moveToNext()
+  return this.use {
+    generateSequence {
+      if (moreRowsExist) {
+        consumeFunction(this).apply {
+          moreRowsExist = moveToNext()
+        }
+      } else {
+        null
       }
-    } else {
-      null
     }
   }
 }
