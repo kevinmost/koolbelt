@@ -1,14 +1,19 @@
+@file:Suppress("unused")
+
 package com.kevinmost.koolbelt.extension.android
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.TypedArray
+import android.os.Build
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.annotation.StyleableRes
 import android.support.design.widget.Snackbar
+import android.support.v7.widget.ViewUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -66,8 +71,8 @@ fun <T : View> View.firstDescendantOfInstance(type: Class<T>, includeSelf: Boole
     includeSelf && type.isInstance(this) -> this
     this is ViewGroup -> toSequence()
         .filterNotNull()
-        .firstOrNull {
-          child -> child.firstDescendantOfInstance(type, includeSelf = true) != null
+        .firstOrNull { child ->
+          child.firstDescendantOfInstance(type, includeSelf = true) != null
         }
     else -> null
   }?.let { type.cast(it) }
@@ -298,6 +303,159 @@ class OnHierarchyChangeListenerBuilder(private val preventInfiniteLoop: Boolean,
   }
 }
 
+abstract class ViewSideAttribute protected constructor(protected val view: View) {
+
+  abstract var left: Int
+
+  abstract var right: Int
+
+  abstract var top: Int
+
+  abstract var bottom: Int
+
+  var start: Int
+    get() = if (view.direction == LayoutDirection.RTL) right else left
+    set(value) {
+      if (view.direction == LayoutDirection.RTL) right = value else left = value
+    }
+
+  var end: Int
+    get() = if (view.direction == LayoutDirection.RTL) left else right
+    set(value) {
+      if (view.direction == LayoutDirection.RTL) left = value else right = value
+    }
+
+  operator fun get(side: Side): Int {
+    return when (side) {
+      Side.START -> start
+      Side.TOP -> top
+      Side.END -> end
+      Side.BOTTOM -> bottom
+    }
+  }
+
+  operator fun set(side: Side, value: Int) {
+    when (side) {
+      Side.START -> start = value
+      Side.TOP -> top = value
+      Side.END -> end = value
+      Side.BOTTOM -> bottom = value
+    }
+  }
+}
+
+val View.margins: ViewMargins
+  get() = ViewMargins(this)
+
+class ViewMargins internal constructor(view: View) : ViewSideAttribute(view) {
+
+  override var left: Int
+    get() = view.marginLayoutParams?.leftMargin ?: 0
+    set(value) {
+      view.marginLayoutParams?.leftMargin = value
+    }
+
+  override var right: Int
+    get() = view.marginLayoutParams?.rightMargin ?: 0
+    set(value) {
+      view.marginLayoutParams?.rightMargin = value
+    }
+
+  override var top: Int
+    get() = view.marginLayoutParams?.topMargin ?: 0
+    set(value) {
+      view.marginLayoutParams?.topMargin = value
+    }
+
+  override var bottom: Int
+    get() = view.marginLayoutParams?.bottomMargin ?: 0
+    set(value) {
+      view.marginLayoutParams?.bottomMargin = value
+    }
+
+  private val View.marginLayoutParams: ViewGroup.MarginLayoutParams?
+    get() {
+      return layoutParams as? ViewGroup.MarginLayoutParams
+    }
+}
+
+val View.padding: ViewPadding
+  get() = ViewPadding(this)
+
+class ViewPadding internal constructor(view: View) : ViewSideAttribute(view) {
+  override var left: Int
+    get() = view.paddingLeft
+    set(value) = view.paddings(left = value)
+
+  override var right: Int
+    get() = view.paddingRight
+    set(value) = view.paddings(right = value)
+
+  override var top: Int
+    get() = view.paddingTop
+    set(value) = view.paddings(top = value)
+
+  override var bottom: Int
+    get() = view.paddingBottom
+    set(value) = view.paddings(bottom = value)
+
+  private fun View.paddings(
+      left: Int = paddingLeft,
+      top: Int = paddingTop,
+      right: Int = paddingRight,
+      bottom: Int = paddingBottom
+  ) = setPadding(left, top, right, bottom)
+}
+
+val Context.layoutDirection: LayoutDirection
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  get() = LayoutDirection.determineForLayoutDirection(resources.configuration.layoutDirection)
+
+val View.direction: LayoutDirection
+  get() = if (ViewUtils.isLayoutRtl(this)) LayoutDirection.RTL else LayoutDirection.LTR
+
+enum class LayoutDirection {
+  LTR,
+  RTL
+  ;
+
+  companion object {
+
+    fun determineForLayoutDirection(layoutDirectionInt: Int) = when (layoutDirectionInt) {
+      android.util.LayoutDirection.LTR -> LTR
+      android.util.LayoutDirection.RTL -> RTL
+      else -> throw IllegalArgumentException("Invalid int $layoutDirectionInt passed to determineForLayoutDirection")
+    }
+  }
+}
+
+enum class Side(val opposite: Side, val clockwiseInLTR: Side) {
+  START(opposite = END, clockwiseInLTR = TOP),
+  TOP(opposite = BOTTOM, clockwiseInLTR = END),
+  END(opposite = START, clockwiseInLTR = BOTTOM),
+  BOTTOM(opposite = TOP, clockwiseInLTR = START)
+  ;
+
+  fun counterClockwise(layoutDirectionInt: Int): Side {
+    return counterClockwise(LayoutDirection.determineForLayoutDirection(layoutDirectionInt))
+  }
+
+  fun counterClockwise(layoutDirection: LayoutDirection): Side {
+    return clockwise(layoutDirection).clockwise(layoutDirection).clockwise(layoutDirection)
+  }
+
+  fun clockwise(layoutDirectionInt: Int): Side {
+    return clockwise(LayoutDirection.determineForLayoutDirection(layoutDirectionInt))
+  }
+
+  fun clockwise(layoutDirection: LayoutDirection): Side {
+    return clockwiseInLTR.run {
+      if (layoutDirection == LayoutDirection.RTL) this.opposite else this
+    }
+  }
+}
+
+
 /**
  * Sets an [ViewGroup.OnHierarchyChangeListener] on this [ViewGroup]
  *
@@ -318,7 +476,9 @@ inline fun <V : View> V.onGlobalLayout(
     crossinline onNextGlobalLayout: (V) -> Unit) {
   selfReference<ViewTreeObserver.OnGlobalLayoutListener> {
     ViewTreeObserver.OnGlobalLayoutListener {
-      if (removeAfterFirstInvocation) { viewTreeObserver.removeOnGlobalLayoutListener(self) }
+      if (removeAfterFirstInvocation) {
+        viewTreeObserver.removeOnGlobalLayoutListener(self)
+      }
       onNextGlobalLayout(this@onGlobalLayout)
     }.apply {
       viewTreeObserver.addOnGlobalLayoutListener(this)
