@@ -429,12 +429,39 @@ enum class LayoutDirection {
   }
 }
 
-enum class Side(val opposite: Side, val clockwiseInLTR: Side) {
-  START(opposite = END, clockwiseInLTR = TOP),
-  TOP(opposite = BOTTOM, clockwiseInLTR = END),
-  END(opposite = START, clockwiseInLTR = BOTTOM),
-  BOTTOM(opposite = TOP, clockwiseInLTR = START)
+enum class Side {
+  START {
+    override val opposite: Side
+      get() = END
+
+    override val clockwiseInLTR: Side
+      get() = TOP
+  },
+  TOP {
+    override val opposite: Side
+      get() = BOTTOM
+
+    override val clockwiseInLTR: Side
+      get() = END
+  },
+  END {
+    override val opposite: Side
+      get() = START
+
+    override val clockwiseInLTR: Side
+      get() = BOTTOM
+  },
+  BOTTOM {
+    override val opposite: Side
+      get() = TOP
+
+    override val clockwiseInLTR: Side
+      get() = START
+  }
   ;
+
+  abstract val opposite: Side
+  abstract val clockwiseInLTR: Side
 
   fun counterClockwise(layoutDirectionInt: Int): Side {
     return counterClockwise(LayoutDirection.determineForLayoutDirection(layoutDirectionInt))
