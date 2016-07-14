@@ -18,7 +18,8 @@ import android.view.View.MeasureSpec
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
-import java.util.*
+import com.kevinmost.koolbelt.extension.mutableListOfSize
+import com.kevinmost.koolbelt.util.buildList
 
 
 fun <T : View> Activity.find(@IdRes id: Int): T? {
@@ -37,52 +38,58 @@ fun <T : View> Dialog.find(@IdRes id: Int): T? {
 }
 
 fun ViewGroup.getChildren(): List<View> {
-  val list = ArrayList<View>(childCount)
-  for (index in 0..childCount) {
-    list.add(getChildAt(index))
-  }
-  return list
-}
-
-inline fun ViewGroup.forEachChild(forEachChild: View.() -> Unit) {
-  for (index in 0..childCount) {
-    getChildAt(index)?.let {
-      forEachChild(it)
-    }
-  }
-}
-
-/**
- * @return this view if it of type [T]; otherwise, the first child of this view that is of type [T].
- * The search is performed depth-first.
- */
-fun <T : View> View.getChildOfType(type: Class<T>): T? {
-  if (type.isInstance(this)) {
-    return type.cast(this)
-  }
-  if (this is ViewGroup) {
+  return mutableListOfSize<View>(childCount).apply {
     for (index in 0..childCount) {
-      getChildAt(index).getChildOfType(type)?.let { return it }
+      getChildAt(index)?.let { add(it) }
     }
   }
-  return null
 }
 
 /**
- * @return a list of all children of this View that are of type [T]. This View is also included in
- * the list as the first element if it is of type [T]. The search is performed depth-first.
+ * NOTE: This [Sequence] could easily get unstable if you change the View hierarchy while it's in scope.
  */
-fun <T : View?> View.getAllChildrenOfType(type: Class<T>): List<T> {
-  val list = mutableListOf<T>()
-  if (type.isInstance(this)) {
-    list.add(type.cast(this))
-  }
-  if (this is ViewGroup) {
-    forEachChild {
-      list.addAll(getAllChildrenOfType(type))
+fun ViewGroup.toSequence(): Sequence<View?> {
+  var currentIndex = 0
+  return generateSequence {
+    return@generateSequence try {
+      getChildAt(currentIndex)
+    } finally {
+      currentIndex++
     }
   }
-  return list.toList() // Return immutable collection
+}
+
+fun <T : View> View.firstDescendantOfInstance(type: Class<T>, includeSelf: Boolean = true): T? {
+  return when {
+    includeSelf && type.isInstance(this) -> type.cast(this)
+    this is ViewGroup -> toSequence()
+        .filterNotNull()
+        .map { child -> child.firstDescendantOfInstance(type, includeSelf = true) }
+        .firstOrNull()
+    else -> null
+  }
+}
+
+fun <T : View?> View.allDescendantsOfInstance(type: Class<T>, includeSelf: Boolean = true): List<T> {
+  return buildList {
+    addIf(includeSelf && type.isInstance(this)) { type.cast(this) }
+    addAllIf(this is ViewGroup) {
+      (this@allDescendantsOfInstance as ViewGroup).toSequence()
+          .map { child -> child?.allDescendantsOfInstance(type, includeSelf = true) ?: emptyList() }
+          .flatten()
+          .asIterable()
+    }
+  }
+}
+
+operator fun ViewGroup.plus(@LayoutRes layoutRes: Int): ViewGroup {
+  addView(layoutRes)
+  return this
+}
+
+operator fun ViewGroup.plus(view: View): ViewGroup {
+  addView(view)
+  return this
 }
 
 fun ViewGroup.addView(@LayoutRes layoutRes: Int, index: Int = -1): View {
@@ -110,7 +117,7 @@ fun sharedElementPair(view: View): Pair<View, String> {
 
 inline fun Context.styledAttributes(attributeSet: AttributeSet,
     @StyleableRes attrs: IntArray,
-    block: TypedArray.() -> Unit) {
+    block: (TypedArray) -> Unit) {
   val typedArray = obtainStyledAttributes(attributeSet, attrs)
   block(typedArray)
   try {
@@ -192,7 +199,7 @@ sealed class Visibility {
 
 var View.vis: Visibility
   get() {
-    return when(visibility) {
+    return when (visibility) {
       VISIBLE -> Visibility.VISIBLE
       INVISIBLE -> Visibility.INVISIBLE
       GONE -> Visibility.GONE
@@ -200,7 +207,7 @@ var View.vis: Visibility
     }
   }
   set(value) {
-    visibility = when(value) {
+    visibility = when (value) {
       Visibility.VISIBLE -> VISIBLE
       Visibility.INVISIBLE -> INVISIBLE
       Visibility.GONE -> GONE
@@ -224,13 +231,13 @@ val Activity.rootView: View
 // See: http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.3_r1/android/support/v7/app/MediaRouteButton.java#256
 // Even Google, the kings of "let's have 50 fields written in Hungarian notation in our 4000-line class files",
 // think this is gross
-inline fun <reified A: Activity> View.getHostingActivity(): A {
+inline fun <reified A : Activity> View.getHostingActivity(): A {
   var context: Context = context
   while (context is ContextWrapper) {
     if (context is A) {
       return context
     }
-    context = @Suppress("USELESS_CAST")(context as ContextWrapper).baseContext
+    context = @Suppress("USELESS_CAST") (context as ContextWrapper).baseContext
   }
   throw IllegalStateException("This View has no hosting Activity of type ${A::class.java.name}. Its completely-unwrapped Context is an instance of ${context.javaClass.name}")
 }
