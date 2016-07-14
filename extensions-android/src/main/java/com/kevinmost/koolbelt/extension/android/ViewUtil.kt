@@ -17,9 +17,11 @@ import android.view.View.INVISIBLE
 import android.view.View.MeasureSpec
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import com.kevinmost.koolbelt.extension.mutableListOfSize
 import com.kevinmost.koolbelt.util.buildList
+import com.kevinmost.koolbelt.util.selfReference
 
 
 fun <T : View> Activity.find(@IdRes id: Int): T? {
@@ -242,4 +244,81 @@ inline fun <reified A : Activity> View.getHostingActivity(): A {
     context = @Suppress("USELESS_CAST") (context as ContextWrapper).baseContext
   }
   throw IllegalStateException("This View has no hosting Activity of type ${A::class.java.name}. Its completely-unwrapped Context is an instance of ${context.javaClass.name}")
+}
+
+class OnHierarchyChangeListenerBuilder(private val preventInfiniteLoop: Boolean, private val parent: ViewGroup) {
+
+  private var onChildAdded: (View) -> Unit = {}
+  private var onChildRemoved: (View) -> Unit = {}
+
+  /**
+   * Specify what happens when a child is added from the [parent]
+   */
+  fun onChildAdded(block: (View) -> Unit) {
+    onChildAdded = block
+  }
+
+  /**
+   * Specify what happens when a child is removed from the [parent]
+   */
+  fun onChildRemoved(block: (View) -> Unit) {
+    onChildRemoved = block
+  }
+
+  /**
+   * Stops any future listening from this listener when invoked
+   */
+  fun removeThisListener() {
+    parent.setOnHierarchyChangeListener(null)
+  }
+
+  fun build(): ViewGroup.OnHierarchyChangeListener {
+    return object : ViewGroup.OnHierarchyChangeListener {
+      override fun onChildViewAdded(parent: View, child: View) {
+        invokeListener(this, onChildAdded, child)
+      }
+
+      override fun onChildViewRemoved(parent: View, child: View) {
+        invokeListener(this, onChildRemoved, child)
+      }
+    }
+  }
+
+  private fun invokeListener(listener: ViewGroup.OnHierarchyChangeListener, callback: (View) -> Unit, arg: View) {
+    if (preventInfiniteLoop) {
+      parent.setOnHierarchyChangeListener(null)
+    }
+    callback(arg)
+    if (preventInfiniteLoop) {
+      parent.setOnHierarchyChangeListener(listener)
+    }
+  }
+}
+
+/**
+ * Sets an [ViewGroup.OnHierarchyChangeListener] on this [ViewGroup]
+ *
+ * @param preventInfiniteLoop removes the listener before invoking either [OnHierarchyChangeListenerBuilder.onChildAdded]
+ * or [OnHierarchyChangeListenerBuilder.onChildRemoved], and then adds it back after invoking, so that calls can't be
+ * made recursively by accident
+ *
+ * @param init where you specify what to listen for
+ */
+inline fun <V : ViewGroup> V.onHierarchyChanges(
+    preventInfiniteLoop: Boolean = true,
+    init: OnHierarchyChangeListenerBuilder.() -> Unit) {
+  setOnHierarchyChangeListener(OnHierarchyChangeListenerBuilder(preventInfiniteLoop, this).apply { init() }.build())
+}
+
+inline fun <V : View> V.onGlobalLayout(
+    removeAfterFirstInvocation: Boolean = true,
+    crossinline onNextGlobalLayout: (V) -> Unit) {
+  selfReference<ViewTreeObserver.OnGlobalLayoutListener> {
+    ViewTreeObserver.OnGlobalLayoutListener {
+      if (removeAfterFirstInvocation) { viewTreeObserver.removeOnGlobalLayoutListener(self) }
+      onNextGlobalLayout(this@onGlobalLayout)
+    }.apply {
+      viewTreeObserver.addOnGlobalLayoutListener(this)
+    }
+  }
 }
