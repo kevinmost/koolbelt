@@ -251,6 +251,8 @@ class OnHierarchyChangeListenerBuilder(private val preventInfiniteLoop: Boolean,
   private var onChildAdded: (View) -> Unit = {}
   private var onChildRemoved: (View) -> Unit = {}
 
+  private var userRequestedListenerStaysRemoved: Boolean = false
+
   /**
    * Specify what happens when a child is added from the [parent]
    */
@@ -269,6 +271,7 @@ class OnHierarchyChangeListenerBuilder(private val preventInfiniteLoop: Boolean,
    * Stops any future listening from this listener when invoked
    */
   fun removeThisListener() {
+    userRequestedListenerStaysRemoved = true
     parent.setOnHierarchyChangeListener(null)
   }
 
@@ -289,7 +292,7 @@ class OnHierarchyChangeListenerBuilder(private val preventInfiniteLoop: Boolean,
       parent.setOnHierarchyChangeListener(null)
     }
     callback(arg)
-    if (preventInfiniteLoop) {
+    if (preventInfiniteLoop && !userRequestedListenerStaysRemoved) {
       parent.setOnHierarchyChangeListener(listener)
     }
   }
