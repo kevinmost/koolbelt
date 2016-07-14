@@ -61,14 +61,16 @@ fun ViewGroup.toSequence(): Sequence<View?> {
 
 fun <T : View> View.firstDescendantOfInstance(type: Class<T>, includeSelf: Boolean = true): T? {
   return when {
-    includeSelf && type.isInstance(this) -> type.cast(this)
+    includeSelf && type.isInstance(this) -> this
     this is ViewGroup -> toSequence()
         .filterNotNull()
-        .map { child -> child.firstDescendantOfInstance(type, includeSelf = true) }
-        .firstOrNull()
+        .firstOrNull {
+          child -> child.firstDescendantOfInstance(type, includeSelf = true) != null
+        }
     else -> null
-  }
+  }?.let { type.cast(it) }
 }
+
 
 fun <T : View?> View.allDescendantsOfInstance(type: Class<T>, includeSelf: Boolean = true): List<T> {
   return buildList {
