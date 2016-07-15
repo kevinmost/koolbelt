@@ -1,5 +1,6 @@
 package com.kevinmost.koolbelt.util
 
+import com.kevinmost.koolbelt.extension.print
 import org.junit.Assert
 import org.junit.Test
 
@@ -68,5 +69,18 @@ class TreeTest {
     Assert.assertEquals(2, tree[0][0].value)
     Assert.assertEquals(3, tree[0][1].value)
     Assert.assertEquals(7, tree[0][2].value)
+  }
+
+  @Test fun `test tree prints in human-readable fashion`() {
+    print = treeOf("root") {
+      node("child1") {
+        node("grandchild1")
+        node("grandchild2") {
+          node("greatGrandchild")
+        }
+        node("grandchild3")
+      }
+      node("child2")
+    }
   }
 }

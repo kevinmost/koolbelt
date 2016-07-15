@@ -15,7 +15,7 @@ inline fun <V : Comparable<V>> sortedTreeOf(root: V,
       .__build(parent = null) { children -> children.sortedBy { it.value } }
 }
 
-data class Tree<V> constructor(
+data class Tree<V>(
     val value: V,
     val children: List<Tree<V>>,
     val parent: Tree<V>?
@@ -27,7 +27,34 @@ data class Tree<V> constructor(
     ).map { it.sort(comparator) })
   }
 
-  // TODO: For some reason, toString seems broken on this (throws StackOverflowError), even with shallow trees
+
+  // Note: Because of the nature of these trees, the default hashCode, equals, and toString all recurse infinitely.
+  // We need these custom implementations that don't include the parent node
+
+  private val _hashCodeAndEquals = hashCodeAndEquals(Tree<V>::value, Tree<V>::children)
+
+  override fun hashCode() = _hashCodeAndEquals.getHashCode()
+
+  override fun equals(other: Any?) = _hashCodeAndEquals.getEquals(other)
+
+  override fun toString(): String {
+    return buildString {
+      appendln("$value")
+
+      buildString {
+        val numChildren = children.size
+        children.forEachIndexed { i, child ->
+          val startingCharacter = if (i < numChildren - 1) '├' else '└'
+          appendln("$startingCharacter── ${child.toString()}")
+        }
+      }.apply {
+        if (this.isNotBlank()) {
+          append(this.trim().prependIndent("|   "))
+        }
+      }
+
+    }.trim()
+  }
 }
 
 class Builder<V>(val root: V) {
