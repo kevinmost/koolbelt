@@ -341,16 +341,16 @@ abstract class ViewSideAttribute protected constructor(protected val view: View)
     return when(side) {
       Side.START -> if (view.direction == LayoutDirection.LTR) left() else right()
       Side.TOP -> top()
-      Side.END -> if (view.direction === LayoutDirection.LTR) right() else left()
+      Side.END -> if (view.direction == LayoutDirection.LTR) right() else left()
       Side.BOTTOM -> bottom()
     }
   }
 
   operator fun set(side: Side, value: Int) {
     when (side) {
-      Side.START -> start = value
+      Side.START -> if (view.direction == LayoutDirection.LTR) left = value else right = value
       Side.TOP -> top = value
-      Side.END -> end = value
+      Side.END -> if (view.direction == LayoutDirection.LTR) right = value else left = value
       Side.BOTTOM -> bottom = value
     }
   }
