@@ -102,8 +102,13 @@ operator fun ViewGroup.plus(view: View): ViewGroup {
 }
 
 fun ViewGroup.addView(@LayoutRes layoutRes: Int, index: Int = -1): View {
-  return context.inflate<View>(layoutRes, this, false).apply {
-    this@addView.addView(this, index)
+  // You'd think we should just inflate with attachToRoot = false, so we don't have to remove and add this view,
+  // but if we do that with an XML layout that is a <merge/> tag, we get an exception!
+  return context.inflate<View>(layoutRes, this, true).apply {
+    if (index > -1) {
+      removeView(this)
+      addView(this, index)
+    }
   }
 }
 
