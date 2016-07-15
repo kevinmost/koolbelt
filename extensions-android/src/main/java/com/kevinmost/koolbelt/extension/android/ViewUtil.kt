@@ -305,32 +305,44 @@ class OnHierarchyChangeListenerBuilder(private val preventInfiniteLoop: Boolean,
 
 abstract class ViewSideAttribute protected constructor(protected val view: View) {
 
-  abstract var left: Int
+  var left: Int
+    get() = get(if (view.direction == LayoutDirection.LTR) Side.START else Side.END)
+    set(value) = setSides(left = value)
 
-  abstract var right: Int
+  var right: Int
+    get() = get(if (view.direction == LayoutDirection.LTR) Side.END else Side.START)
+    set(value) = setSides(right = value)
 
-  abstract var top: Int
+  var top: Int
+    get() = get(Side.TOP)
+    set(value) = setSides(top = value)
 
-  abstract var bottom: Int
+  var bottom: Int
+    get() = get(Side.BOTTOM)
+    set(value) = setSides(bottom = value)
 
   var start: Int
-    get() = if (view.direction == LayoutDirection.RTL) right else left
-    set(value) {
-      if (view.direction == LayoutDirection.RTL) right = value else left = value
-    }
+    get() = get(Side.START)
+    set(value) = set(Side.START, value)
 
   var end: Int
-    get() = if (view.direction == LayoutDirection.RTL) left else right
-    set(value) {
-      if (view.direction == LayoutDirection.RTL) left = value else right = value
-    }
+    get() = get(Side.END)
+    set(value) = set(Side.END, value)
+
+  fun set(vararg sides: Pair<Side, Int>) {
+    val sidesMap = sides.toMap()
+    sidesMap[if (view.direction == LayoutDirection.LTR) Side.START else Side.END]?.let { left = it }
+    sidesMap[Side.TOP]?.let { top = it }
+    sidesMap[if (view.direction == LayoutDirection.LTR) Side.END else Side.START]?.let { right = it }
+    sidesMap[Side.BOTTOM]?.let { bottom = it }
+  }
 
   operator fun get(side: Side): Int {
-    return when (side) {
-      Side.START -> start
-      Side.TOP -> top
-      Side.END -> end
-      Side.BOTTOM -> bottom
+    return when(side) {
+      Side.START -> if (view.direction == LayoutDirection.LTR) left() else right()
+      Side.TOP -> top()
+      Side.END -> if (view.direction === LayoutDirection.LTR) right() else left()
+      Side.BOTTOM -> bottom()
     }
   }
 
@@ -342,69 +354,54 @@ abstract class ViewSideAttribute protected constructor(protected val view: View)
       Side.BOTTOM -> bottom = value
     }
   }
+
+  operator fun set(sides: Array<Side>, value: Int) {
+    sides.forEach { set(it, value) }
+  }
+
+  protected abstract fun setSides(left: Int = left, top: Int = top, right: Int = right, bottom: Int = bottom)
+
+  protected abstract fun left(): Int
+  protected abstract fun right(): Int
+  protected abstract fun top(): Int
+  protected abstract fun bottom(): Int
 }
 
 val View.margins: ViewMargins
   get() = ViewMargins(this)
 
 class ViewMargins internal constructor(view: View) : ViewSideAttribute(view) {
+  override fun left() = view.marginLayoutParams?.leftMargin ?: 0
 
-  override var left: Int
-    get() = view.marginLayoutParams?.leftMargin ?: 0
-    set(value) {
-      view.marginLayoutParams?.leftMargin = value
-    }
+  override fun right() = view.marginLayoutParams?.rightMargin ?: 0
 
-  override var right: Int
-    get() = view.marginLayoutParams?.rightMargin ?: 0
-    set(value) {
-      view.marginLayoutParams?.rightMargin = value
-    }
+  override fun top() = view.marginLayoutParams?.topMargin ?: 0
 
-  override var top: Int
-    get() = view.marginLayoutParams?.topMargin ?: 0
-    set(value) {
-      view.marginLayoutParams?.topMargin = value
-    }
-
-  override var bottom: Int
-    get() = view.marginLayoutParams?.bottomMargin ?: 0
-    set(value) {
-      view.marginLayoutParams?.bottomMargin = value
-    }
+  override fun bottom() = view.marginLayoutParams?.bottomMargin ?: 0
 
   private val View.marginLayoutParams: ViewGroup.MarginLayoutParams?
-    get() {
-      return layoutParams as? ViewGroup.MarginLayoutParams
-    }
+    get() = layoutParams as? ViewGroup.MarginLayoutParams
+
+  override fun setSides(left: Int, top: Int, right: Int, bottom: Int) {
+    (view.layoutParams as? ViewGroup.MarginLayoutParams)?.let { it.setMargins(left, top, right, bottom) }
+  }
 }
 
 val View.padding: ViewPadding
   get() = ViewPadding(this)
 
 class ViewPadding internal constructor(view: View) : ViewSideAttribute(view) {
-  override var left: Int
-    get() = view.paddingLeft
-    set(value) = view.paddings(left = value)
+  override fun left() = view.paddingLeft
 
-  override var right: Int
-    get() = view.paddingRight
-    set(value) = view.paddings(right = value)
+  override fun right() = view.paddingRight
 
-  override var top: Int
-    get() = view.paddingTop
-    set(value) = view.paddings(top = value)
+  override fun top() = view.paddingTop
 
-  override var bottom: Int
-    get() = view.paddingBottom
-    set(value) = view.paddings(bottom = value)
+  override fun bottom() = view.paddingBottom
 
-  private fun View.paddings(
-      left: Int = paddingLeft,
-      top: Int = paddingTop,
-      right: Int = paddingRight,
-      bottom: Int = paddingBottom
-  ) = setPadding(left, top, right, bottom)
+  override fun setSides(left: Int, top: Int, right: Int, bottom: Int) {
+    view.setPadding(left, top, right, bottom)
+  }
 }
 
 val Context.layoutDirection: LayoutDirection
