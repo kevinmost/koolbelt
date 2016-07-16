@@ -334,12 +334,17 @@ abstract class ViewSideAttribute protected constructor(protected val view: View)
     get() = get(Side.END)
     set(value) = set(Side.END, value)
 
+  fun set(value: Int, vararg side: Side) {
+    set(side as Array<Side>, value)
+  }
+
   fun set(vararg sides: Pair<Side, Int>) {
     val sidesMap = sides.toMap()
-    sidesMap[if (view.direction == LayoutDirection.LTR) Side.START else Side.END]?.let { left = it }
-    sidesMap[Side.TOP]?.let { top = it }
-    sidesMap[if (view.direction == LayoutDirection.LTR) Side.END else Side.START]?.let { right = it }
-    sidesMap[Side.BOTTOM]?.let { bottom = it }
+    val left = sidesMap[if (view.direction == LayoutDirection.LTR) Side.START else Side.END] ?: left
+    val top = sidesMap[Side.TOP] ?: top
+    val right = sidesMap[if (view.direction == LayoutDirection.LTR) Side.END else Side.START] ?: right
+    val bottom = sidesMap[Side.BOTTOM] ?: bottom
+    setSides(left, top, right, bottom)
   }
 
   operator fun get(side: Side): Int {
@@ -352,16 +357,11 @@ abstract class ViewSideAttribute protected constructor(protected val view: View)
   }
 
   operator fun set(side: Side, value: Int) {
-    when (side) {
-      Side.START -> if (view.direction == LayoutDirection.LTR) left = value else right = value
-      Side.TOP -> top = value
-      Side.END -> if (view.direction == LayoutDirection.LTR) right = value else left = value
-      Side.BOTTOM -> bottom = value
-    }
+    set(side to value)
   }
 
   operator fun set(sides: Array<Side>, value: Int) {
-    sides.forEach { set(it, value) }
+    set(*sides.map { it to value }.toTypedArray())
   }
 
   protected abstract fun setSides(left: Int = left, top: Int = top, right: Int = right, bottom: Int = bottom)
