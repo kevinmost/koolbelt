@@ -16,6 +16,8 @@ allprojects {
           "com.android.support:cardview-v7:$versions.appCompatV7",
           "com.android.support:design:$versions.appCompatV7",
       ],
+
+      threeTenBP: "org.threeten:threetenbp:1.3.2",
       threeTenABP: "com.jakewharton.threetenabp:threetenabp:1.0.3",
 
       rxJava: "io.reactivex:rxjava:1.1.3",

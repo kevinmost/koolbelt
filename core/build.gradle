@@ -43,9 +43,11 @@ artifacts {
 
 
 dependencies {
-  [deps.kotlinStdlib,
+  [
+      deps.kotlinStdlib,
       deps.rxJava,
       deps.gson,
+      deps.threeTenBP,
   ].forEach {
     compileOnly it
     testCompile it
