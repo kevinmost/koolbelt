@@ -2,7 +2,9 @@ package com.kevinmost.koolbelt.extension
 
 fun <K, V : Any?> Map<K?, V>.filterNotNullKeys(): Map<K, V> {
   @Suppress("UNCHECKED_CAST")
-  return (this.filterKeys { it != null }) as Map<K, V>
+  return this.toMutableMap().also {
+      it.remove(null)
+  } as Map<K, V>
 }
 
 fun <K : Any?, V> Map<K, V?>.filterNotNullValues(): Map<K, V> {
